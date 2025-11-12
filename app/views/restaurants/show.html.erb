@@ -1,16 +1,18 @@
 <div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%= image_path "#{@restaurant.category.downcase}.jpg" %>);">
   <div class="container">
-  </div>
+    </div>
 </div>
-<div class="container mt-2 mb-5">
-  <div class="row justify-content-around">
-    <div class="col-12 col-sm-8">
-      <p>
-        <%= link_to '< Restaurants', restaurants_path, class: 'btn-light opacity-25 text-decoration-none' %>
+
+<div class="container mt-4 mb-5">
+  <div class="row">
+    <div class="col-12 col-lg-8">
+      <p class="mb-2">
+        <%= link_to '< Restaurants', restaurants_path, class: 'btn btn-sm btn-outline-secondary' %>
       </p>
-      <div class="d-flex align-items-center">
+
+      <div class="d-flex align-items-center mb-2">
         <h1 class="m-0"><%= @restaurant.name %></h1>
-        <p class="m-0 ms-2" style="font-size: 0.8em">
+        <p class="m-0 ms-3 text-warning" style="font-size: 1.25rem;">
           <% @restaurant.rating.round.times do %>
             <i class="fas fa-star"></i>
           <% end %>
@@ -19,23 +21,35 @@
           <% end %>
         </p>
       </div>
-      <p class="fw-lighter opacity-75 mt-2"><%= Faker::Restaurant.description  %></p>
+
+      <p class="text-muted"><%= Faker::Restaurant.description %></p>
     </div>
-    <div class="col-12 col-sm-4 mt-5">
+
+    <div class="col-12 col-lg-4 mt-4 mt-lg-0">
       <%= render 'restaurants/side_info' %>
-    </p>
+    </div>
   </div>
-  <p><strong>Reviews</strong></p>
-  <ul class="list-group">
-    <% @restaurant.reviews.each do |review| %>
-      <li class="list-group-item">
-        <%= review.content %>
-        <%= link_to "Delete",
-    review_path(review),
-    data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}
-  %>
-      </li>
+
+  <hr>
+
+  <h2 class="h4 mt-4 mb-3">Reviews (<%= @restaurant.reviews.count %>)</h2>
+
+  <ul class="list-group mb-4">
+    <% if @restaurant.reviews.any? %>
+      <% @restaurant.reviews.each do |review| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><%= review.content %></span>
+          <%= link_to "Delete",
+            review_path(review),
+            data: {turbo_method: :delete, turbo_confirm: "Are sure you want to delete this review?"},
+            class: 'btn btn-danger btn-sm ms-3'
+          %>
+        </li>
+      <% end %>
+    <% else %>
+      <li class="list-group-item text-muted">No reviews yet. Be the first!</li>
     <% end %>
   </ul>
-  <br>
+
+  <%= link_to "Add a Review", new_restaurant_review_path(@restaurant), class: 'btn btn-primary' %>
 </div>
